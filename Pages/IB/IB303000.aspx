@@ -44,7 +44,7 @@
         <Items>
             <px:PXTabItem Text="Part Details">
                 <Template>
-                    <px:PXGrid SyncPosition="True" Width="100%" SkinID="Details" runat="server" ID="CstPXGrid5">
+                    <px:PXGrid SyncPosition="True" Width="100%" SkinID="Details" runat="server" ID="CstPXGrid6">
                         <Levels>
                             <px:PXGridLevel DataMember="SalesOrderPartItems">
                                 <Columns>
@@ -53,7 +53,7 @@
                                     <px:PXGridColumn DataField="Description" Width="200"></px:PXGridColumn>
                                     <px:PXGridColumn CommitChanges="True" DataField="Qty" Width="100"></px:PXGridColumn>
                                     <px:PXGridColumn DataField="Price" Width="200"></px:PXGridColumn>
-                                    <px:PXGridColumn CommitChanges="True" DataField="TotalPrice" Width="200"></px:PXGridColumn>
+                                    <px:PXGridColumn DataField="TotalPrice" Width="200"></px:PXGridColumn>
                                     <px:PXGridColumn DataField="Status" Width="100"></px:PXGridColumn>
                                 </Columns>
                             </px:PXGridLevel>
