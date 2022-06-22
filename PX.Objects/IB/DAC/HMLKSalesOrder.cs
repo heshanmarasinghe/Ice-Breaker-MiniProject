@@ -63,14 +63,14 @@ namespace PX.Objects.IB
 
 		#region OrderTotalStock
 		[PXDecimal()]
-		[PXDefault(TypeCode.Decimal, "0.0", PersistingCheck = PXPersistingCheck.Nothing)]
+		[PXUnboundDefault(TypeCode.Decimal, "0.0", PersistingCheck = PXPersistingCheck.Nothing)]
 		public virtual Decimal? OrderTotalStock { get; set; }
 		public abstract class orderTotalStock : PX.Data.BQL.BqlDecimal.Field<orderTotalStock> { }
 		#endregion
 
 		#region OrderTotalNonStock
 		[PXDecimal()]
-		[PXDefault(TypeCode.Decimal, "0.0", PersistingCheck = PXPersistingCheck.Nothing)]
+		[PXUnboundDefault(TypeCode.Decimal, "0.0", PersistingCheck = PXPersistingCheck.Nothing)]
 		public virtual Decimal? OrderTotalNonStock { get; set; }
 		public abstract class orderTotalNonStock : PX.Data.BQL.BqlDecimal.Field<orderTotalNonStock> { }
 		#endregion

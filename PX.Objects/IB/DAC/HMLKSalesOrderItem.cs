@@ -58,7 +58,7 @@ namespace PX.Objects.IB
 		#endregion
 
 		#region TotalPrice
-		[PXDecimal()]
+		[PXDBDecimal()]
 		[PXUIField(DisplayName = "Total Price", Enabled = false)]
 		public virtual Decimal? TotalPrice { get; set; }
 		public abstract class totalPrice : PX.Data.BQL.BqlDecimal.Field<totalPrice> { }
@@ -160,7 +160,7 @@ namespace PX.Objects.IB
 		#endregion
 
 		#region TotalPrice
-		[PXDecimal()]
+		[PXDBDecimal()]
 		[PXUIField(DisplayName = "Total Price", Enabled = false)]
 		[PXFormula(
 			 typeof(Mult<HMLKSalesOrderStockItem.qty, HMLKSalesOrderStockItem.price>),
@@ -194,7 +194,7 @@ namespace PX.Objects.IB
 		#endregion
 
 		#region TotalPrice
-		[PXDecimal()]
+		[PXDBDecimal()]
 		[PXUIField(DisplayName = "Total Price", Enabled = false)]
 		[PXFormula(
 			 typeof(Mult<HMLKSalesOrderNonStockItem.qty, HMLKSalesOrderNonStockItem.price>),
