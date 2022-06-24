@@ -149,6 +149,103 @@ namespace PX.Objects.IB
 
 		#region Actions
 
+		public PXAction<HMLKSalesOrder> ReleaseOrder;
+		[PXButton]
+		[PXUIField(DisplayName = "Release", Enabled = true)]
+		protected virtual void releaseOrder()
+		{
+			var salesOrder = SalesOrder.Current;
+
+			if (SalesOrderPartItems.Select() == null) return;
+
+			if (salesOrder.Status == SalesOrderStatusConstants.Cancelled || salesOrder.Status == SalesOrderStatusConstants.Closed)
+			{
+				string status = string.Empty;
+
+				if (salesOrder.Status == SalesOrderStatusConstants.Cancelled) { status = Messages.Cancelled; }
+				else if (salesOrder.Status == SalesOrderStatusConstants.Closed) { status = Messages.Closed; }
+
+				throw new PXException(string.Format(Messages.SalesOrderCancelledOrClosed, status).ToString());
+			}
+			else
+			{
+				salesOrder.Status = SalesOrderStatusConstants.Released;
+
+				SalesOrder.Update(salesOrder);
+				Actions.PressSave();
+			}
+		}
+
+		public PXAction<HMLKSalesOrder> CancelOrder;
+		[PXButton]
+		[PXUIField(DisplayName = "Cancel", Enabled = true)]
+		protected virtual void cancelOrder()
+		{
+			var salesOrder = SalesOrder.Current;
+			var salesOrderItems = SalesOrderPartItems.Select();
+
+			if (salesOrderItems == null) return;
+
+			bool anyDeliveredItems = salesOrderItems.ToQueryable<PXResult<HMLKSalesOrderStockItem>>()
+											.Any(x => ((HMLKSalesOrderStockItem)x).Status == SalesOrderItemStatusConstants.Delivered);
+
+			if (salesOrder.Status == SalesOrderStatusConstants.Planned)
+			{
+				salesOrder.Status = SalesOrderStatusConstants.Cancelled;
+
+				SalesOrder.Update(salesOrder);
+				Actions.PressSave();
+			}
+			else if (salesOrder.Status == SalesOrderStatusConstants.Released)
+			{
+				if (anyDeliveredItems)
+				{
+					throw new PXException(Messages.SalesOrderDeliveredItems);
+				}
+
+				salesOrder.Status = SalesOrderStatusConstants.Cancelled;
+
+				SalesOrder.Update(salesOrder);
+				Actions.PressSave();
+			}
+			else
+			{
+				throw new PXException(Messages.SalesOrderNotReleased);
+			}
+
+		}
+
+		public PXAction<HMLKSalesOrder> CloseOrder;
+		[PXButton]
+		[PXUIField(DisplayName = "Close", Enabled = true)]
+		protected virtual void closeOrder()
+		{
+			var salesOrder = SalesOrder.Current;
+			var salesOrderItems = SalesOrderPartItems.Select();
+
+			if (SalesOrderPartItems.Select() == null) return;
+
+			if (salesOrder.Status != SalesOrderStatusConstants.Cancelled)
+			{
+				if (salesOrderItems.ToQueryable<PXResult<HMLKSalesOrderStockItem>>()
+								.All(x => ((HMLKSalesOrderStockItem)x).Status == SalesOrderItemStatusConstants.Cancelled))
+				{
+					throw new PXException(Messages.SalesOrderCancelledItems);
+				}
+				else
+				{
+					salesOrder.Status = SalesOrderStatusConstants.Closed;
+
+					SalesOrder.Update(salesOrder);
+					Actions.PressSave();
+				}
+			}
+			else
+			{
+				throw new PXException(string.Format(Messages.SalesOrderCancelledOrClosed, Messages.Cancelled).ToString());
+			}
+		}
+
 		public PXAction<HMLKSalesOrder> DeliverOrder;
 		[PXButton(DisplayOnMainToolbar = false)]
 		[PXUIField(DisplayName = "Deliver", Enabled = true)]
@@ -199,71 +296,6 @@ namespace PX.Objects.IB
 			else
 			{
 				throw new PXException(Messages.SalesOrderNotReleased);
-			}
-		}
-
-		public PXAction<HMLKSalesOrder> CancelOrder;
-		[PXButton]
-		[PXUIField(DisplayName = "Cancel Order", Enabled = true)]
-		protected virtual void cancelOrder()
-		{
-			var salesOrder = SalesOrder.Current;
-			var salesOrderItems = SalesOrderPartItems.Select();
-
-			if (salesOrderItems == null) return;
-
-			bool anyDeliveredItems = salesOrderItems.ToQueryable<PXResult<HMLKSalesOrderStockItem>>()
-											.Any(x => ((HMLKSalesOrderStockItem)x).Status == SalesOrderItemStatusConstants.Delivered);
-
-			if (anyDeliveredItems)
-			{
-				throw new PXException(Messages.SalesOrderDeliveredItems);
-			}
-			else
-			{
-				if (salesOrder.Status == SalesOrderStatusConstants.Released)
-				{
-					salesOrder.Status = SalesOrderStatusConstants.Cancelled;
-
-					SalesOrder.Update(salesOrder);
-					Actions.PressSave();
-				}
-				else
-				{
-					throw new PXException(Messages.SalesOrderNotReleased);
-				}
-			}
-
-		}
-
-		public PXAction<HMLKSalesOrder> CloseOrder;
-		[PXButton]
-		[PXUIField(DisplayName = "Close Order", Enabled = true)]
-		protected virtual void closeOrder()
-		{
-			var salesOrder = SalesOrder.Current;
-			var salesOrderItems = SalesOrderPartItems.Select();
-
-			if (SalesOrderPartItems.Select() == null) return;
-
-			if (salesOrder.Status != SalesOrderStatusConstants.Cancelled)
-			{
-				if (salesOrderItems.ToQueryable<PXResult<HMLKSalesOrderStockItem>>()
-								.All(x => ((HMLKSalesOrderStockItem)x).Status == SalesOrderItemStatusConstants.Cancelled))
-				{
-					throw new PXException(Messages.SalesOrderCancelledItems);
-				}
-				else
-				{
-					salesOrder.Status = SalesOrderStatusConstants.Closed;
-
-					SalesOrder.Update(salesOrder);
-					Actions.PressSave();
-				}
-			}
-			else
-			{
-				throw new PXException(Messages.SalesOrderCancelled);
 			}
 		}
 

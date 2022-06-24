@@ -35,7 +35,7 @@ namespace PX.Objects.IB
 		public const string SalesOrderDeliveredItems = "The Sales Order cannot be Cancelled because there are Delivered Items!!";
 		public const string SalesOrderCancelledItems = "The Sales Order cannot be Closed because all the items are Cancelled!!";
 		public const string SalesOrderItemDelivered = "The Sales Order Item is Delivered!!";
-		public const string SalesOrderCancelled = "The Sales Order is Cancelled!!";
+		public const string SalesOrderCancelledOrClosed = "The Sales Order is {0}!!";
 		public const string QuantityCannotBeNegative = "The value in the Quantity column cannot be negative.";
 
 		//Graph Names
