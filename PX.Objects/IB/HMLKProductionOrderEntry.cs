@@ -214,13 +214,13 @@ namespace PX.Objects.IB
 
 				var totalStockQty = stockItems.Where(x => ((HMLKStockAllocation)x).PartNo == item.PartNo).Select(x => ((HMLKStockAllocation)x).Qty).Sum();
 
-				if (item.TotalQty > totalStockQty)
+				if (item.TotalQty > totalStockQty || totalStockQty == null)
 				{
 					BOM.Cache.RaiseExceptionHandling<HMLKBOM.totalQty>(item, item.TotalQty,
 						new PXException(Messages.LessQuantity));
 				}
 
-				lowStockItems.Add(item.TotalQty > totalStockQty ? false : true);
+				lowStockItems.Add(item.TotalQty > totalStockQty || totalStockQty == null ? false : true);
 			}
 
 			return lowStockItems.Any(x => x.Equals(false));

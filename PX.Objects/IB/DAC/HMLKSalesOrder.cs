@@ -87,7 +87,7 @@ namespace PX.Objects.IB
 		#region Status
 		[PXDBString(3, IsFixed = true)]
 		[PXDefault(SalesOrderStatusConstants.Planned)]
-		[PXUIField(DisplayName = "Status")]
+		[PXUIField(DisplayName = "Status", Enabled = false)]
 		[PXStringList(
 				new string[]
 				{

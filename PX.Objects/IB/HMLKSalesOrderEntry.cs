@@ -95,10 +95,6 @@ namespace PX.Objects.IB
 			HMLKSalesOrder row = e.Row;
 			if (row == null) return;
 
-			PXUIFieldAttribute.SetEnabled<HMLKSalesOrder.status>
-				(SalesOrder.Cache, null, row.Status != SalesOrderStatusConstants.Cancelled &&
-										 row.Status != SalesOrderStatusConstants.Closed);
-
 			HMLKProductionOrder productionOrder = HMLKProductionOrder.PK.FindSalesOrder(this, SalesOrder.Current.CustomerOrderNo);
 
 			if (productionOrder != null)
