@@ -18,9 +18,9 @@ namespace PX.Objects.IB
 		[PXDefault]
 		[PXUIField(DisplayName = "Warehouse ID")]
 		[PXSelector(typeof(Search<warehouseCD>),
-		typeof(warehouseCD),
-		typeof(description),
-		typeof(address))]
+			typeof(warehouseCD),
+			typeof(description),
+			typeof(address))]
 		public virtual string WarehouseCD { get; set; }
 		public abstract class warehouseCD : PX.Data.BQL.BqlString.Field<warehouseCD> { }
 		#endregion

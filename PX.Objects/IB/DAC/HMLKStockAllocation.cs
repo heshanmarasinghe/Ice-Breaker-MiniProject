@@ -33,8 +33,7 @@ namespace PX.Objects.IB
 		[PXDBInt(IsKey = true)]
 		[PXDefault]
 		[PXUIField(DisplayName = "Location")]
-		[PXSelector(typeof(Search<HMLKInventoryLocation.locationNo,
-								Where<HMLKInventoryLocation.warehouseNo.IsEqual<HMLKStockAllocation.warehouseNo.FromCurrent>>>),
+		[PXSelector(typeof(Search<HMLKInventoryLocation.locationNo>),
 			typeof(HMLKInventoryLocation.locationCD),
 			typeof(HMLKInventoryLocation.description),
 			SubstituteKey = typeof(HMLKInventoryLocation.locationCD),
@@ -47,7 +46,7 @@ namespace PX.Objects.IB
 		[PXDBInt(IsKey = true)]
 		[PXDefault]
 		[PXUIField(DisplayName = "Part")]
-		[PXSelector(typeof(Search<HMLKInventory.partNo>),
+		[PXSelector(typeof(Search<HMLKInventory.partNo, Where<HMLKInventory.inventoryType.IsEqual<stockInventoryType>>>),
 			typeof(HMLKInventory.partCD),
 			typeof(HMLKInventory.description),
 			typeof(HMLKInventory.price),

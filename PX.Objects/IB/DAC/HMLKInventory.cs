@@ -1,5 +1,6 @@
 ﻿using System;
 using PX.Data;
+using PX.Data.BQL;
 using PX.Data.ReferentialIntegrity.Attributes;
 
 namespace PX.Objects.IB

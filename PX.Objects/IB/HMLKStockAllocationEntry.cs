@@ -37,6 +37,8 @@ namespace PX.Objects.IB
 			HMLKStockAllocation row = StockItem.Current;
 			HMLKStockAllocation stockItem = HMLKStockAllocation.PK.Find(this, row.PartNo, row.LocationNo);
 
+			this.Clear();
+
 			if (stockItem != null)
 			{
 				StockItem.Cache.Clear();

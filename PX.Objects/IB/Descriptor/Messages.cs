@@ -26,12 +26,11 @@ namespace PX.Objects.IB
 		public const string Delivered = "Delivered";
 
 		//Messages
+		public const string DuplicateLocation = "The Location already Exists!!";
 		public const string LessQuantity = "The Quantity is Less to Manufacture the Product!!";
-		public const string ProductionOrderCancelled = "The Production Order cannot be Cancelled!!";
 		public const string LessQuantityForSalesComponent = "The Quantity for the {0} is less to proceed with the Sales Order!!";
 		public const string SalesOrderNotReleased = "The Sales Order is not in Released Status!!";
 		public const string SalesOrderNotReleasedForItem = "The Corresponding Sales Order is not in Released Status to Deliver the Product!!";
-		public const string SalesOrderStatusUpdate = "Cannot update the Status for the Sales Order!!";
 		public const string SalesOrderDeliveredItems = "The Sales Order cannot be Cancelled because there are Delivered Items!!";
 		public const string SalesOrderCancelledItems = "The Sales Order cannot be Closed because all the items are Cancelled!!";
 		public const string SalesOrderItemDelivered = "The Sales Order Item is Delivered!!";

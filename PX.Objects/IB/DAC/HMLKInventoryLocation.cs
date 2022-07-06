@@ -1,6 +1,7 @@
 ﻿using System;
 using PX.Data;
 using PX.Data.BQL.Fluent;
+using PX.Data.ReferentialIntegrity.Attributes;
 
 namespace PX.Objects.IB
 {
@@ -14,14 +15,30 @@ namespace PX.Objects.IB
 		public abstract class locationNo : PX.Data.BQL.BqlInt.Field<locationNo> { }
 		#endregion
 
+		#region WarehouseNo
+		[PXDBInt(IsKey = true)]
+		[PXDBDefault(typeof(HMLKWarehouse.warehouseNo))]
+		[PXUIField(DisplayName = "Warehouse ID")]
+		[PXParent(typeof(SelectFrom<HMLKWarehouse>.
+						 Where<HMLKWarehouse.warehouseNo.
+						 IsEqual<HMLKInventoryLocation.warehouseNo.FromCurrent>>))]
+		[PXSelector(typeof(Search<HMLKWarehouse.warehouseNo>),
+			typeof(HMLKWarehouse.warehouseCD),
+			typeof(HMLKWarehouse.description),
+			SubstituteKey = typeof(HMLKWarehouse.warehouseCD),
+			DescriptionField = typeof(HMLKWarehouse.description))]
+		public virtual int? WarehouseNo { get; set; }
+		public abstract class warehouseNo : PX.Data.BQL.BqlInt.Field<warehouseNo> { }
+		#endregion
+
 		#region LocationCD
 		[PXDBString(15, IsKey = true, IsUnicode = true, InputMask = ">aaaaaaaaaaaaaaa")]
 		[PXDefault]
 		[PXUIField(DisplayName = "Location ID")]
-		[PXSelector(typeof(Search<locationCD>),
-		typeof(locationCD),
-		typeof(description),
-		typeof(address))]
+		[PXSelector(typeof(Search<HMLKInventoryLocation.locationCD, Where<HMLKInventoryLocation.warehouseNo, Equal<Current<warehouseNo>>>>),
+			typeof(HMLKInventoryLocation.locationCD),
+			typeof(HMLKInventoryLocation.description),
+			typeof(HMLKInventoryLocation.address))]
 		public virtual string LocationCD { get; set; }
 		public abstract class locationCD : PX.Data.BQL.BqlString.Field<locationCD> { }
 		#endregion
@@ -38,16 +55,6 @@ namespace PX.Objects.IB
 		[PXUIField(DisplayName = "Description")]
 		public virtual string Description { get; set; }
 		public abstract class description : PX.Data.BQL.BqlString.Field<description> { }
-		#endregion
-
-		#region WarehouseNo
-		[PXDBInt(IsKey = true)]
-		[PXDBDefault(typeof(HMLKWarehouse.warehouseNo))]
-		[PXParent(typeof(SelectFrom<HMLKWarehouse>.
-						 Where<HMLKWarehouse.warehouseNo.
-						 IsEqual<HMLKInventoryLocation.warehouseNo.FromCurrent>>))]
-		public virtual int? WarehouseNo { get; set; }
-		public abstract class warehouseNo : PX.Data.BQL.BqlInt.Field<warehouseNo> { }
 		#endregion
 
 		#region CreatedDateTime
@@ -103,6 +110,13 @@ namespace PX.Objects.IB
 	[PXCacheName("Warehouse Locations")]
 	public class HMLKInventoryWarehouseLocation : HMLKInventoryLocation
 	{
+		#region Keys
+		public class PK : PrimaryKeyOf<HMLKInventoryWarehouseLocation>.By<locationCD>
+		{
+			public static HMLKInventoryWarehouseLocation Find(PXGraph graph, string locationCD) => FindBy(graph, locationCD);
+		}
+		#endregion
+
 		#region LocationCD
 		[PXDBString(15, IsKey = true, IsUnicode = true, InputMask = ">aaaaaaaaaaaaaaa")]
 		[PXDefault]

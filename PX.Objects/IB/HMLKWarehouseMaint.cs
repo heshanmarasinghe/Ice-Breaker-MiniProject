@@ -15,5 +15,22 @@ namespace PX.Objects.IB
 			  .IsEqual<HMLKWarehouse.warehouseNo.FromCurrent>>.View WarehouseLocations;
 
 		#endregion
+
+		#region Event Handler
+
+		protected virtual void _(Events.RowInserting<HMLKInventoryWarehouseLocation> e)
+		{
+			HMLKInventoryWarehouseLocation row = e.Row;
+			if (row == null) return;
+
+			var location = HMLKInventoryWarehouseLocation.PK.Find(this, row.LocationCD);
+
+			if (location != null)
+			{
+				throw new PXException(Messages.DuplicateLocation);
+			}
+		}
+
+		#endregion
 	}
 }

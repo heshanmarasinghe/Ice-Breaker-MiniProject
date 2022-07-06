@@ -4,16 +4,31 @@ using PX.Data.BQL.Fluent;
 
 namespace PX.Objects.IB
 {
-	public class HMLKInventoryLocationMaint : PXGraph<HMLKInventoryLocationMaint>
+	public class HMLKInventoryLocationMaint : PXGraph<HMLKInventoryLocationMaint, HMLKInventoryLocation>
 	{
 		#region Views
 
 		public SelectFrom<HMLKInventoryLocation>.View Locations;
 
-		public SelectFrom<HMLKStockAllocation>.InnerJoin<HMLKInventory>.On<HMLKInventory.partNo
+		public SelectFrom<HMLKStockAllocation>
+			.InnerJoin<HMLKInventory>.On<HMLKInventory.partNo
 			  .IsEqual<HMLKStockAllocation.partNo>>
-			  .Where<HMLKStockAllocation.locationNo
-			  .IsEqual<HMLKInventoryLocation.locationNo.FromCurrent>>.View PartStockItems;
+			.Where<HMLKStockAllocation.locationNo
+			  .IsEqual<HMLKInventoryLocation.locationNo.FromCurrent>
+			.And<HMLKStockAllocation.warehouseNo
+				.IsEqual<HMLKInventoryLocation.warehouseNo.FromCurrent>>>.View PartStockItems;
+
+		#endregion
+
+		#region Event Handlers
+
+		protected void _(Events.RowSelected<HMLKInventoryLocation> e)
+		{
+			HMLKInventoryLocation row = e.Row;
+			if (row == null) return;
+
+			Locations.Cache.AllowInsert = Locations.Cache.AllowDelete = Locations.AllowUpdate = false;
+		}
 
 		#endregion
 
@@ -25,7 +40,8 @@ namespace PX.Objects.IB
 		protected virtual void addQty()
 		{
 			var graph = CreateInstance<HMLKStockAllocationEntry>();
-			graph.StockItem.Current = SelectFrom<HMLKStockAllocation>.View.Select(graph);
+			graph.StockItem.Cache.Clear();
+			graph.StockItem.Current = (HMLKStockAllocation)graph.StockItem.Cache.CreateInstance();
 			graph.StockItem.Current.WarehouseNo = Locations.Current.WarehouseNo;
 			graph.StockItem.Current.LocationNo = Locations.Current.LocationNo;
 			graph.StockItem.UpdateCurrent();

@@ -113,62 +113,20 @@ namespace PX.Objects.IB
 		[PXUIField(DisplayName = "Receive Shop Order", Enabled = true)]
 		protected virtual IEnumerable receiveShopOrder(PXAdapter adapter)
 		{
-			try
+			if (ProductionOrder.Current != null)
 			{
-				if (ProductionOrder.Current != null)
-				{
-					var stockItemsEntry = CreateInstance<HMLKProductionStockAllocationEntry>();
-					stockItemsEntry.StockItem.Current = SelectFrom<HMLKStockAllocation>.View.Select(stockItemsEntry);
-					stockItemsEntry.StockItem.Current.PartNo = ProductionOrder.Current.PartNo;
-					stockItemsEntry.StockItem.Current.Qty = ProductionOrder.Current.Qty;
+				var stockItemsEntry = CreateInstance<HMLKProductionStockAllocationEntry>();
+				stockItemsEntry.StockItem.Current = (HMLKStockAllocation)stockItemsEntry.StockItem.Cache.CreateInstance();
+				stockItemsEntry.StockItem.Current.PartNo = ProductionOrder.Current.PartNo;
+				stockItemsEntry.StockItem.Current.Qty = ProductionOrder.Current.Qty;
+				stockItemsEntry.ProductionOrder.Current = ProductionOrder.Current;
 
-					stockItemsEntry.StockItem.UpdateCurrent();
+				stockItemsEntry.StockItem.UpdateCurrent();
+				stockItemsEntry.ProductionOrder.UpdateCurrent();
 
-					throw new PXPopupRedirectException(stockItemsEntry, Messages.ReceiveShopOrder);
-				}
-				return adapter.Get();
+				throw new PXPopupRedirectException(stockItemsEntry, Messages.ReceiveShopOrder);
 			}
-			finally
-			{
-				HMLKProductionOrder row = ProductionOrder.Current;
-
-				//Update SalesOrderItem Status
-				if (row.SalesOrderNo != null)
-				{
-					var salesOrderEntry = CreateInstance<HMLKSalesOrderEntry>();
-					HMLKSalesOrderStockItem salesOrderItem = HMLKSalesOrderStockItem.PK.Find(this, row.PartNo, row.SalesOrderNo);
-					HMLKSalesOrder salesOrder = HMLKSalesOrder.PK.Find(this, row.SalesOrderNo);
-
-					if (salesOrder?.Status == SalesOrderStatusConstants.Released)
-					{
-						salesOrderItem.Status = SalesOrderItemStatusConstants.Delivered;
-						salesOrderEntry.SalesOrderPartItems.Update(salesOrderItem);
-					}
-					else
-					{
-						throw new PXException(Messages.SalesOrderNotReleasedForItem);
-					}
-
-					salesOrderEntry.SalesOrderPartItems.Cache.Persist(PXDBOperation.Update);
-
-					var salesOrderPartItems = SelectFrom<HMLKSalesOrderStockItem>
-													.Where<HMLKSalesOrderStockItem.customerOrderNo.IsEqual<@P.AsString>>
-													.View.Select(this, row.SalesOrderNo);
-
-					if (salesOrderPartItems.ToQueryable<PXResult<HMLKSalesOrderStockItem>>()
-						.All(x => ((HMLKSalesOrderStockItem)x).Status == SalesOrderItemStatusConstants.Delivered))
-					{
-						salesOrder.Status = SalesOrderStatusConstants.Closed;
-						salesOrderEntry.SalesOrder.Update(salesOrder);
-						salesOrderEntry.SalesOrder.Cache.Persist(PXDBOperation.Update);
-					}
-				}
-
-				//Update Production Order Status
-				row.Status = ProductionOrderStatusConstants.Closed;
-				ProductionOrder.Update(row);
-				Actions.PressSave();
-			}
+			return adapter.Get();
 		}
 
 		public PXAction<HMLKProductionOrder> CancelOrder;
@@ -212,7 +170,8 @@ namespace PX.Objects.IB
 				var stockItems = stockItemsEntry.StockItem.Select().ToQueryable<PXResult<HMLKStockAllocation>>()
 											.Where(x => ((HMLKStockAllocation)x).PartNo == item.PartNo);
 
-				var totalStockQty = stockItems.Where(x => ((HMLKStockAllocation)x).PartNo == item.PartNo).Select(x => ((HMLKStockAllocation)x).Qty).Sum();
+				var totalStockQty = stockItems.Where(x => ((HMLKStockAllocation)x).PartNo == item.PartNo)
+											.Select(x => ((HMLKStockAllocation)x).Qty).Sum();
 
 				if (item.TotalQty > totalStockQty || totalStockQty == null)
 				{
