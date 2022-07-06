@@ -37,7 +37,7 @@
                             </px:PXGridLevel>
                         </Levels>
                         <AutoSize Enabled="True"></AutoSize>
-                        <Mode InitNewRow="True"></Mode>
+                        <Mode InitNewRow="False"></Mode>
                     </px:PXGrid>
                 </Template>
             </px:PXTabItem>

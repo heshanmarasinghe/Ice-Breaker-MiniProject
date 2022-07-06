@@ -15,7 +15,8 @@
     <px:PXFormView ID="form" runat="server" DataSourceID="ds" DataMember="Locations" Width="100%" Height="100px" AllowAutoHide="false">
         <Template>
             <px:PXLayoutRule ID="PXLayoutRule1" runat="server" StartRow="True" ControlSize="M" LabelsWidth="S" />
-            <px:PXSelector runat="server" ID="CstPXSelector2" DataField="LocationCD"></px:PXSelector>
+            <px:PXSelector runat="server" ID="PXSelector1" DataField="WarehouseNo" CommitChanges="True"></px:PXSelector>
+            <px:PXSelector runat="server" ID="CstPXSelector2" DataField="LocationCD" CommitChanges="True"></px:PXSelector>
             <px:PXTextEdit runat="server" ID="PXTextEdit1" DataField="Address"></px:PXTextEdit>
             <px:PXLayoutRule ControlSize="M" LabelsWidth="S" runat="server" ID="CstPXLayoutRule4" StartColumn="True"></px:PXLayoutRule>
             <px:PXTextEdit runat="server" ID="PXTextEdit3" DataField="Description" Width="300"></px:PXTextEdit>

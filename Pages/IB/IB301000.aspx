@@ -12,11 +12,11 @@
     </px:PXDataSource>
 </asp:Content>
 <asp:Content ID="cont2" ContentPlaceHolderID="phF" runat="Server">
-    <px:PXFormView ID="form" runat="server" DataSourceID="ds" DataMember="StockItem" Width="100%" AllowAutoHide="false" SyncPosition="true">
+    <px:PXFormView ID="PXFormView1" runat="server" DataSourceID="ds" DataMember="StockItem" Width="100%" AllowAutoHide="false">
         <Template>
             <px:PXLayoutRule ID="PXLayoutRule1" runat="server" StartRow="True" ControlSize="M" LabelsWidth="S" />
-            <px:PXSelector runat="server" CommitChanges="true" ID="CstPXSelector3" DataField="WarehouseNo" Width="300px"></px:PXSelector>
-            <px:PXSelector AutoRefresh="true" runat="server" CommitChanges="true" ID="CstPXSelector1" DataField="LocationNo" Width="300px"></px:PXSelector>
+            <px:PXSelector runat="server" ID="CstPXSelector3" DataField="WarehouseNo" Width="300px"></px:PXSelector>
+            <px:PXSelector runat="server" ID="CstPXSelector1" DataField="LocationNo" Width="300px"></px:PXSelector>
             <px:PXSelector runat="server" CommitChanges="true" ID="CstPXSelector2" DataField="PartNo" Width="300px"></px:PXSelector>
             <px:PXNumberEdit runat="server" CommitChanges="true" ID="PXNumberEdit1" DataField="Qty"></px:PXNumberEdit>
         </Template>
